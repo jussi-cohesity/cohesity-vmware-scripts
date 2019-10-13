@@ -1,0 +1,25 @@
+#!/bin/sh
+
+##
+#
+# Example script to enable application aware backups with VMware Tools
+#
+# This scrpt must be /usr/sbin/post-thaw-sciprt
+#
+##
+
+date >> '/cohesity-backup/post_backup.log'
+echo -e "\n Running /usr/sbin/post-thaw-script for PostgrSQL as root user\n" >> '/cohesity-backup/post_backup.log'
+if [ "$(id -u)" -eq "0" ]; then
+python '/cohesity-backup/unquiesce.py'
+if [ $? -ne 0 ]
+then
+date >> '/cohesity-backup/post_backup.log'
+echo -e "\n Unable to unquiesce PostgrSQL DB\n" >> '/cohesity-backup/post_backup.log'
+exit 1
+fi
+echo -e "\n Database is in unquiesce mode now\n" >> '/cohesity-backup/post_backup.log'
+else
+date >> '/cohesity-backup/post_backup.log'
+echo -e "ERROR! Not root user\n" >> '/cohesity-backup/post_backup.log'
+fi

@@ -1,0 +1,24 @@
+#!/bin/sh
+
+##
+#
+# Example script to enable application aware backups with VMware Tools
+#
+# This scrpt must be /usr/sbin/pre-freeze-sciprt
+#
+##
+
+date >> '/cohesity-backup/pre_backup.log'
+echo -e "\n Running /usr/sbin/pre-freeze-script for PostgrSQL as root user\n" >> /cohesity-backup/pre_backup.log 
+if [ "$(id -u)" -eq "0" ]; then
+python '/cohesity-backup/quiesce.py'
+if [ $? -ne 0 ]
+then
+echo -e "\n Unable to quiesce PostgrSQL DB\n" >> /cohesity-backup/pre_backup.log
+exit 1
+fi
+echo -e "\n Database is in quiesce mode now\n" >> /cohesity-backup/pre_backup.log
+else
+date >> '/cohesity-backup/pre_backup.log'
+echo -e "ERROR! Not root user\n" >> '/cohesity-backup/pre_backup.log'
+fi
