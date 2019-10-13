@@ -1,0 +1,18 @@
+#!/bin/sh
+
+##
+#
+# Example script to enable application aware backups with VMware Tools
+#
+# This scrpt must be /usr/sbin/post-thaw-sciprt
+#
+##
+
+date >> '/cohesity-backup/post_backup.log'
+echo -e "\n Running /sr/sbin/post-thaw-script for MySQL as root user\n" >> /cohesity-backup/post_backup.log
+if [ "$(id -u)" -eq "0" ]; then
+python '/cohesity-backup/unquiesce.py'
+else
+date >> '/cohesity-backup/post_backup.log'
+echo -e "ERROR! Not running root useri\n" >> '/cohesity-backup/post_backup.log'
+fi

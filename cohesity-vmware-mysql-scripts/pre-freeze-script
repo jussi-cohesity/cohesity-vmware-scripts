@@ -1,0 +1,21 @@
+#!/bin/sh
+
+##
+#
+# Example script to enable application aware backups with VMware Tools
+#
+# This scrpt must be /usr/sbin/pre-freeze-sciprt
+#
+##
+
+
+date >> '/cohesity-backup/pre_backup.log'
+echo -e "\n Running /usr/sbin/pre-freeze-script for MySQL as root user\n" >> /cohesity-backup/pre_backup.log
+if [ "$(id -u)" -eq "0" ]; then
+python '/cohesity-backup/quiesce.py' &
+echo -e "\n Running query flush tables with read lock to quiesce the database\n" >> /cohesity-backup/pre_backup.log
+echo -e "\n Database is in quiesce mode now\n" >> /cohesity-backup/pre_backup.log
+else
+date >> '/cohesity-backup/pre_backup.log'
+echo -e "ERROR! Not running root useri\n" >> '/cohesity-backup/pre_backup.log'
+fi
